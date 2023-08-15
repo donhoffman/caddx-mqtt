@@ -198,7 +198,7 @@ class NXController(object):
             return "disarmed"
 
     def publish_all(self):
-        # Publish all current values to MQTT client
+        # Publish all current values to MQTT clnt
         if not self._mqtt_client_enabled:
             return
         if not self.mqtt_client.connected:
@@ -468,7 +468,7 @@ class NXController(object):
                 if types[byte] & (1 << bit):
                     partition.condition_flags.append(name)
 
-        # Publish to mqtt client
+        # Publish to mqtt clnt
         if self._mqtt_client_enabled:
             if not self.initial_mqtt_publish_all_completed:
                 # Publish all current data to mqtt

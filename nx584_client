@@ -4,7 +4,7 @@ import argparse
 import pprint
 import prettytable
 
-from nx584 import client
+from nx584mqtt import client
 
 
 def parse_args():
@@ -26,12 +26,12 @@ def parse_args():
     return args
 
 
-def do_list(clnt, args):
+def do_list(clnt, _args):
     for zone in clnt.list_zones():
         pprint.pprint(zone)
 
 
-def do_list_partitions(clnt, args):
+def do_list_partitions(clnt, _args):
     for part in clnt.list_partitions():
         pprint.pprint(part)
 
@@ -53,7 +53,7 @@ def do_disarm(clnt, args):
     clnt.disarm(args.master, args.partition)
 
 
-def do_summary(clnt, args):
+def do_summary(clnt, _args):
     t = prettytable.PrettyTable(['Zone', 'Name', 'Bypass', 'Status'])
     for zone in clnt.list_zones():
         t.add_row(['%i' % zone['number'], zone['name'],
@@ -130,7 +130,7 @@ def do_set_user_pin(clnt, args):
         print('Unable to set user information')
 
 
-def do_events(clnt, args):
+def do_events(clnt, _args):
     while True:
         events = clnt.get_events()
         if events:
@@ -138,13 +138,13 @@ def do_events(clnt, args):
                 print(event)
 
 
-def do_version(clnt, args):
+def do_version(clnt, _args):
     print(clnt.get_version())
 
 
 def main():
     args = parse_args()
-    url = 'http://%s:%s' % tuple(args.host.split(':', 1))
+    url = 'http://%s:%s' % tuple(args.host.split(':', 1))  # noqa
     clnt = client.Client(url)
     if args.command == 'flagList':
         do_list(clnt, args)
@@ -170,6 +170,7 @@ def main():
         do_events(clnt, args)
     elif args.command == 'version':
         do_version(clnt, args)
+
 
 if __name__ == '__main__':
     main()

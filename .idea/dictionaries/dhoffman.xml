@@ -1,0 +1,33 @@
+<component name="ProjectDictionaryState">
+  <dictionary name="dhoffman">
+    <words>
+      <w>ackreq</w>
+      <w>affero</w>
+      <w>armable</w>
+      <w>armtype</w>
+      <w>asctime</w>
+      <w>authbyte</w>
+      <w>authbytetype</w>
+      <w>baudrate</w>
+      <w>bypassable</w>
+      <w>cksum</w>
+      <w>clnt</w>
+      <w>connack</w>
+      <w>deasserted</w>
+      <w>entryguard</w>
+      <w>fromaddr</w>
+      <w>istty</w>
+      <w>levelname</w>
+      <w>msgtype</w>
+      <w>msgtypefield</w>
+      <w>mstr</w>
+      <w>nbytes</w>
+      <w>pinbuf</w>
+      <w>portspec</w>
+      <w>setuserpin</w>
+      <w>smtphost</w>
+      <w>unbypass</w>
+      <w>zonedata</w>
+    </words>
+  </dictionary>
+</component>

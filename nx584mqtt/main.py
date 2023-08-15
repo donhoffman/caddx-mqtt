@@ -69,7 +69,7 @@ def main():
     # Optional
     parser.add_argument('--mqttPort', default=DEFAULT_MQTT_PORT,
                         metavar='MQTT_PORT',
-                        help='MQTT client Port (default: %s)' % DEFAULT_MQTT_PORT)
+                        help='MQTT clnt Port (default: %s)' % DEFAULT_MQTT_PORT)
     parser.add_argument('--username', default=None,
                         metavar='MQTT_USERNAME',
                         help='MQTT Client Username')

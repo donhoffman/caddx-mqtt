@@ -12,13 +12,13 @@ setup(name='nx584mqtt',
       long_description=long_description,
       long_description_content_type='text/markdown',
       author='rocket4321',
-      url='http://github.com/rocket4321/nx584mqtt',
+      url='http://github.com/rocket4321/nx584mqtt', # noqa
       packages=['nx584mqtt'],
       install_requires=['paho-mqtt', 'requests', 'pyserial'],
       extras_require={
         'full': ['flask', 'prettytable'],
         'http': ['flask'],
-        'client': ['prettytable'],
+        'clnt': ['prettytable'],
       },
       scripts=['nx584_server', 'nx584_client'],
   )

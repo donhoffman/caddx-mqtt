@@ -23,7 +23,7 @@ Typical use case is for a NX/Caddx alarm connected to MQTT mosquitto broker, pos
  >> All options
  # pip3 install nx584mqtt:http
  >> Installs flask
- # pip3 install nx584mqtt:client
+ # pip3 install nx584mqtt:clnt
  >> Installs prettytable
  
 The server must be run on a machine with connectivity to the panel,

@@ -39,7 +39,7 @@ class MQTTClient(object):
         # Publish Last Will if we can at abnormal program termination
         atexit.register(publishLWT)
 
-    # The callback for when the client receives a CONNACK response from the server.
+    # The callback for when the clnt receives a CONNACK response from the server.
     def on_connect(self, client, _userdata, _flags, rc):
         if rc == 0:
             LOG.debug('Connected with result code %s' % str(rc))
@@ -100,7 +100,7 @@ class MQTTClient(object):
         else:
             LOG.error("Unknown command: '%s'" % payload.lower())
 
-    # The callback for when the client disconnects from the server.
+    # The callback for when the clnt disconnects from the server.
     def on_disconnect(self, _client, _userdata, _rc):
         self.connected = False
 
