@@ -12,14 +12,14 @@ class Client(object):
     def list_zones(self):
         r = self._session.get(self._url + '/zones')
         try:
-            return r.json['zones']
+            return r.json['zones'] # noqa
         except TypeError:
             return r.json()['zones']
 
     def list_partitions(self):
         r = self._session.get(self._url + '/partitions')
         try:
-            return r.json['partitions']
+            return r.json['partitions'] # noqa
         except TypeError:
             return r.json()['partitions']
 

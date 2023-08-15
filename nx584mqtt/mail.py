@@ -1,7 +1,5 @@
-try:
-    import ConfigParser as configparser
-except ImportError:
-    import configparser
+
+import configparser
 import email
 import email.mime
 import email.mime.text
@@ -13,7 +11,7 @@ class MissingEmailConfig(Exception):
     pass
 
 
-def _send_system_email(config, subject, recips, body):
+def _send_system_email(config, subject, recipients, body):
     try:
         fromaddr = config.get('email', 'fromaddr')
         smtphost = config.get('email', 'smtphost')
@@ -26,11 +24,11 @@ def _send_system_email(config, subject, recips, body):
     msg['From'] = fromaddr
     msg['Date'] = email.utils.formatdate()
     msg['Message-Id'] = email.utils.make_msgid('nx584mqtt')
-    for addr in recips:
+    for addr in recipients:
         msg['To'] = addr
 
     smtp = smtplib.SMTP(smtphost)
-    smtp.sendmail(fromaddr, recips, msg.as_string())
+    smtp.sendmail(fromaddr, recipients, msg.as_string())
     smtp.quit()
 
 
@@ -127,7 +125,7 @@ def send_log_event_mail(config, event):
     try:
         alarm_events = set(config.get('email', 'alarm_events').split(','))
     except (configparser.NoOptionError, configparser.NoSectionError):
-        alarm_events = set(['Alarm', 'Alarm restore', 'Manual fire',])
+        alarm_events = {'Alarm', 'Alarm restore', 'Manual fire'}
 
     try:
         event_emails = set(config.get('email', 'events').split(','))

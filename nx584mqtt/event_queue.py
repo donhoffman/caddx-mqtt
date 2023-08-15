@@ -1,4 +1,5 @@
 import threading
+from typing import Callable, Any
 
 
 class Event(object):
@@ -36,7 +37,7 @@ class EventQueue(object):
     def get(self, index, timeout=None):
         self._condition.acquire()
 
-        data_available = lambda: index < self._min or self._max > index
+        data_available: Callable[[], bool | Any] = lambda: index < self._min or self._max > index
 
         if not data_available():
             self._condition.wait(timeout)

@@ -44,7 +44,7 @@ MSG_TYPES = [
     'Send X-10 Message',
     'Log Event Request',
     'Send Keypad Text Message',
-    'Keypad Terminal Mode REquest',
+    'Keypad Terminal Mode Request',
     'Reserved',
     'Reserved',
     'Reserved',
@@ -70,7 +70,7 @@ MSG_TYPES = [
 class Zone(object):
     STATUS_FLAGS = [
         'Faulted', 'Trouble', 'Bypass', 'Inhibit', 'Low battery',
-        'Loss of supervision', 'Reserved',]
+        'Loss of supervision', 'Reserved', ]
 
     TYPE_FLAGS = [
         ['Fire', '24 hour', 'Key-switch', 'Follower',
@@ -98,7 +98,7 @@ class Zone(object):
 
     @property
     def faulted(self):
-        return ('Faulted' in self.condition_flags)
+        return 'Faulted' in self.condition_flags
 
 
 class Partition(object):
@@ -123,7 +123,7 @@ class Partition(object):
          'Alarm sent using phone number 2',
          'Alarm sent using phone number 3',
          'Cancel report is in the stack',
-         'Keyswitch armed', 'Delay trip in progress (common zone)'],
+         'Key switch armed', 'Delay trip in progress (common zone)'],
     ]
 
     def __init__(self, number):
@@ -141,7 +141,8 @@ class Partition(object):
                 'Entryguard (stay mode)' in self.condition_flags
                 or 'Silent exit enabled' in self.condition_flags
                 or 'Instant' in self.condition_flags
-               )
+        )
+
 
 class System(object):
     STATUS_FLAGS = [

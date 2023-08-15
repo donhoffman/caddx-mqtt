@@ -8,7 +8,6 @@ import time
 
 from nx584mqtt import api_alt
 from nx584mqtt import controller
-from nx584mqtt import mqtt_client
 
 VERSION = "0.1.13.2021.05.05"
 DEFAULT_MQTT_PORT = 1883
@@ -18,16 +17,16 @@ LOG_FORMAT = '%(asctime)-15s %(module)s %(levelname)s %(message)s'
 
 class NoFlaskInfoFilter(logging.Filter):
     # Matches Flask log lines for filtering
-    def filter(record):
-        return not ( record.levelname in ('INFO') 
-                and record.module in ('_internal')
-               )
+    def filter(self, record: logging.LogRecord) -> bool:
+        return not (record.levelname in 'INFO'
+                    and record.module in '_internal'
+                    )
 
 
 def main():
     parser = argparse.ArgumentParser()
     # Help Display to user
-    parser.add_argument('--version', default=False, action='store_true', 
+    parser.add_argument('--version', default=False, action='store_true',
                         help='Display version')
 
     parser.add_argument('--config', default='config.ini',
@@ -70,7 +69,7 @@ def main():
     # Optional
     parser.add_argument('--mqttPort', default=DEFAULT_MQTT_PORT,
                         metavar='MQTT_PORT',
-                        help='MQTT client Port (default: %s)' % DEFAULT_MQTT_PORT )
+                        help='MQTT client Port (default: %s)' % DEFAULT_MQTT_PORT)
     parser.add_argument('--username', default=None,
                         metavar='MQTT_USERNAME',
                         help='MQTT Client Username')
@@ -99,7 +98,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        LOG.info('%s' % VERSION )
+        LOG.info('%s' % VERSION)
         sys.exit()
 
     if not args.listen and not args.mqtt:
@@ -109,7 +108,7 @@ def main():
     if args.debug and not istty:
         debug_handler = logging.handlers.RotatingFileHandler(
             'debug.log',
-            maxBytes=1024*1024*10,
+            maxBytes=1024 * 1024 * 10,
             backupCount=3)
         debug_handler.setFormatter(formatter)
         debug_handler.setLevel(logging.DEBUG)
@@ -124,7 +123,7 @@ def main():
     if args.log:
         log_handler = logging.handlers.RotatingFileHandler(
             args.log,
-            maxBytes=1024*1024*10,
+            maxBytes=1024 * 1024 * 10,
             backupCount=3)
         log_handler.setFormatter(formatter)
         log_handler.setLevel(logging.INFO)
@@ -138,7 +137,7 @@ def main():
         LOG.setLevel(logging.WARNING)
         logger = logging.getLogger()
         for handler in logger.handlers:
-            handler.addFilter(NoFlaskInfoFilter)
+            handler.addFilter(NoFlaskInfoFilter())
     else:
         LOG.error('Input Log level INVALID. Try: "INFO|DEBUG|WARNING"')
         LOG.setLevel(logging.WARNING)
@@ -175,14 +174,14 @@ def main():
     if args.connect:
         host, port = args.connect.split(':')
         ctrl = controller.NXController((host, int(port)),
-                                args.config,mqtt_host, mqtt_port, mqtt_username,
-				mqtt_password, state_topic_root, command_topic,
-				tls_active, tls_insecure, mqtt_timeout)
+                                       args.config, mqtt_host, mqtt_port, mqtt_username,
+                                       mqtt_password, state_topic_root, command_topic,
+                                       tls_active, tls_insecure, mqtt_timeout)
     elif args.serial:
         ctrl = controller.NXController((args.serial, args.baudrate),
-                                args.config,mqtt_host, mqtt_port, mqtt_username,
-				mqtt_password, state_topic_root, command_topic,
-				tls_active, tls_insecure, mqtt_timeout)
+                                       args.config, mqtt_host, mqtt_port, mqtt_username,
+                                       mqtt_password, state_topic_root, command_topic,
+                                       tls_active, tls_insecure, mqtt_timeout)
     else:
         LOG.error('Either host:port or serial and baudrate are required')
         return
@@ -205,22 +204,23 @@ def main():
             api_alt.CONTROLLER = ctrl
 
             # Exit if not connected and synced within 60 seconds (12 * 5)
-# FUTURE: Make this input parm
+            # FUTURE: Make this input parm
             count = 12
             initial_mqtt_client_publish_online = False
-            while (api_alt.CONTROLLER.running):
+            while api_alt.CONTROLLER.running:
                 time.sleep(5)
-                if (api_alt.CONTROLLER.mqtt_client.connected == False):
-                    LOG.debug('Count down to exit %s - %s' % ( int(count), api_alt.CONTROLLER.queue_active) )
+                if not api_alt.CONTROLLER.mqtt_client.connected:
+                    LOG.debug('Count down to exit %s - %s' % (int(count), api_alt.CONTROLLER.queue_active))
                     count -= 1
-                if (initial_mqtt_client_publish_online == False) and (api_alt.CONTROLLER.queue_active == False) and (api_alt.CONTROLLER.initial_mqtt_publish_all_completed): 
+                if (initial_mqtt_client_publish_online is False) and (api_alt.CONTROLLER.queue_active is False) and (
+                        api_alt.CONTROLLER.initial_mqtt_publish_all_completed):
                     initial_mqtt_client_publish_online = True
                     topic = state_topic_root + "/system/avail"
                     api_alt.CONTROLLER.mqtt_client.publish(topic, "online", retain=True)
-                if (count < 1):
+                if count < 1:
                     api_alt.CONTROLLER.running = False
     except Exception as ex:
-        print('Fatal: %s' % str(ex) )
+        print('Fatal: %s' % str(ex))
     finally:
         # MQTT LWT - Mark system and zones as offline
         try:
@@ -228,6 +228,5 @@ def main():
                 topic = state_topic_root + "/system/avail"
                 api_alt.CONTROLLER.mqtt_client.publish(topic, "offline", retain=True)
         except Exception as ex:
-            LOG.error('Unable to send MQTT Last Will message: %s' % str(ex) )
+            LOG.error('Unable to send MQTT Last Will message: %s' % str(ex))
         sys.exit()
-
