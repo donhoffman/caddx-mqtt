@@ -9,7 +9,8 @@ import time
 from nx584mqtt import api_alt
 from nx584mqtt import controller
 
-VERSION = "0.1.13.2021.05.05"
+# This fork uses SemVer
+VERSION = '0.1.0'
 DEFAULT_MQTT_PORT = 1883
 
 LOG_FORMAT = '%(asctime)-15s %(module)s %(levelname)s %(message)s'
@@ -117,7 +118,7 @@ def main():
     if istty:
         verbose_handler = logging.StreamHandler()
         verbose_handler.setFormatter(formatter)
-        verbose_handler.setLevel(args.debug and logging.DEBUG or logging.INFO)
+        verbose_handler.setLevel(logging.DEBUG)
         LOG.addHandler(verbose_handler)
 
     if args.log:
