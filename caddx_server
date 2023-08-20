@@ -1,5 +1,5 @@
 #!/usr/bin/python
 
-from nx584mqtt import main
+from caddx_mqtt import main
 
 main.main()

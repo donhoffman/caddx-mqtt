@@ -2,16 +2,33 @@
 version: '3'
 services:
 
-  nx584_server:
+  caddx_server:
     build:
       context: "."
-    container_name: "nx584-server"
+    container_name: "caddx_server"
     ports:
       - "5007:5007"
     devices:
       - /dev/ttyS0:/dev/ttyS0
-#      - /dev/ttyUSB0:/dev/ttyUSB0
     volumes:
       - /etc/localtime:/etc/localtime:ro
-    restart: "no"
+      - /appdata/caddx_server:/config
+    environment:
+      - CONFIG_FILE="/config/caddx_server.yaml"
+      # Uncomment each as needed
+      # - LOG_LEVEL="WARNING"
+      # - API_ADDR="127.00.1"
+      # - API_PORT="5007"
+      # - MQTT_BROKER="127.0.0.1"
+      # - MQTT_PORT="1883"
+      # - MQTT_USER="mqtt_user"
+      # - MQTT_PASS="mqtt_pass"
+      # - MQTT_STATE_TOPIC="caddx_server/state"
+      # - MQTT_COMMAND_TOPIC="caddx_server/command"
+      # - MQTT_TIMEOUT="10"
+      # - SOL_ADDR=""
+      # - SERIAL_PORT="/dev/ttyS0"
+      # - SERIAL_BAUD="3800"
+
+    restart: "unless-stopped"
 

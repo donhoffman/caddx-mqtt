@@ -2,7 +2,7 @@ import flask
 import json
 import logging
 
-from nx584mqtt import controller
+from caddx_mqtt import controller
 
 # Set a log handler and format before flask init
 from logging.config import dictConfig
@@ -34,7 +34,7 @@ dictConfig({
 
 LOG = logging.getLogger('api')
 CONTROLLER: controller.NXController | None = None
-app = flask.Flask("nx584mqtt")
+app = flask.Flask("caddx_mqtt.api")
 
 
 def show_zone(zone):

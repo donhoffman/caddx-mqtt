@@ -1,3 +1,4 @@
+#file: noinspection SpellCheckingInspection
 name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
 
 on: push
@@ -10,7 +11,7 @@ jobs:
     - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
-        python-version: 3.7
+        python-version: 3.11
     - name: Install pypa/build
       run: >-
         python -m

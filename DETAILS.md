@@ -1,6 +1,5 @@
-nx584mqtt
-NX584/NX8E Interface to MQTT client and HTTP server
-===================================================
+
+# NX584/NX8E Interface to MQTT client and HTTP server
 
 This is a tool to let you interact with your NetworX alarm panel via
 the NX584 module (which is built into NX8E panels). You must enable it
@@ -9,46 +8,44 @@ in the configuration of the control panel.
 This package is designed to be a direct replacement for pynx584.
 Connection services allow for MQTT client (paho-mqtt) and/or legacy HTTP server (flask).
 
-MQTT provides considerable improvements in zone change latency. Also, since flask is really designed only for development and is considered unstable, HTTP usage is not suggested, but only is provided for backwards-compability.
+MQTT provides considerable improvements in zone change latency. Also, since flask is really designed only for development 
+and is considered unstable, HTTP usage is not suggested, but only is provided for backwards-compatibility.
 
 Typical use case is for a NX/Caddx alarm connected to MQTT mosquitto broker, possibly then to Home Assistant.
  
 # Install
-************************************************************
-- Package installation allows for optional requirements, based on user needs:
- 
- # pip3 install nx584mqtt
- >> default
- # pip3 install nx584mqtt:full
- >> All options
- # pip3 install nx584mqtt:http
- >> Installs flask
- # pip3 install nx584mqtt:clnt
- >> Installs prettytable
+
+Package installation:
+
+ `pip3 install caddx_mqtt`
+
  
 The server must be run on a machine with connectivity to the panel,
 which can be a local serial port, or a Serial-over-LAN device (i.e. a
 TCP socket). For example:
 
- # nx584_server --serial /dev/ttyS0 --baud 38400 [...]
+`caddx_server --serial /dev/ttyS0 --baud 38400 [...]`
 
 or
 
- # nx584_server --connect 192.168.1.101:23 [...]
+`caddx_server --solAddr 192.168.1.101:23 [...]`
 
 
-# MQTT Usage
+# Usage
 
- # nx584_server --mqtt 192.168.1.102 [...] 
+`caddx_server --mqtt 192.168.1.102 [...]`
 
 
 # Command Line Parameters
-************************************************************
--- HTTP (legacy)
+
+## HTTP (legacy)
 '--listen' - 'HTTP Server address (defaults to disabled)'
 '--port' - 'HTTP Server port (defaults to 5007)'
 
--- MQTT
+## MQTT
+
+Command line parameters for MQTT are as follows:
+
 '--mqtt' - 'MQTT Client Host to connect'
 '--mqttPort' - 'MQTT client port (defaults to 1883)'
 '--username' - 'MQTT Client Username'
@@ -58,7 +55,7 @@ or
 '--mqttTlsActive' - 'Enable MQTT TLS (default= to false)'
 '--mqttTlsInsecure' - 'Ignore MQTT TLS Insecurities (Not Recommended) (defaults to false)'
 '--timeout' - 'MQTT Timeout in seconds (default is 10)'
-'--debugLevel' - 'Verbosity of logs written to console [WARNING|INFO|DEBUG] (defaults to WARNING)'
+'--logLevel' - 'Verbosity of logs written to console [WARNING|INFO|DEBUG] (defaults to WARNING)'
 
 - Publish to mqtt <command topic> with value:
 
@@ -66,14 +63,14 @@ or
 'arm_home,<part>' - Arms home partition <part>
 'arm_away,<part>' - Arms away partition <part>
 'bypass_toggle,<zone>' - Toggle bypass of zone (be sure zone is bypassable!!)
-'time' - Update alarm time from local time of nx584mqtt server
+'time' - Update alarm time from local time of caddx_mqtt server
 'status' - Update mqtt status of all fields (dev only)
 'nop' - No action, clears command after arm/disarm to reduce code visibility
 
 
 
 # Client Usage (if enabled/installed)
-************************************************************
+
 Once the server is is running, you should be able to do something like this:
 
  $ nx584_client summary
@@ -103,14 +100,16 @@ Once the server is is running, you should be able to do something like this:
 
  
 Install via Docker Compose
-************************************************************
-Before creating the Docker container, you need to define how you connect to the panel (local serial port, or a Serial-over-LAN device (i.e. a TCP socket)) in the :code:`docker-compose.yml` file. Uncomment and edit the :code:`environment` section to fit your needs::
+Before creating the Docker container, you need to define how you connect to the panel (local serial port, or a 
+Serial-over-LAN device (i.e. a TCP socket)) in the :`docker-compose.yml` file. 
+Uncomment and edit the `environment` section to fit your needs:
 
+'''
  version: "3.2"
 
  services:
-   nx584mqtt:
-     container_name: nx584mqtt
+   caddx_mqtt:
+     container_name: caddx_mqtt
      build:
        context: .docker
        dockerfile: Dockerfile
@@ -122,12 +121,13 @@ Before creating the Docker container, you need to define how you connect to the 
        # - SERIAL=/dev/ttyS0
        # - BAUD=38400
        # - CONNECT=192.168.1.101:23
+'''
 
 To build the image, create the Docker container and then run it, make sure you're at the root of the checked out repo and run::
 
  # docker-compose up -d
 
-You should now be able to conect to the nx584mqtt Docker container via its exposed port (default :code:`5007`).
+You should now be able to connect to the caddx_mqtt Docker container via its exposed port (default :code:`5007`).
 
 Config
 ------
@@ -161,7 +161,7 @@ it with zone names::
  ************************************************************
  
 >> Binary Sensors
-Note: Previous binary sensors were autonamed from zones, and now would require additional effort to reproduce. 
+Note: Previous binary sensors were auto-named from zones, and now would require additional effort to reproduce. 
 Zone names and details are all published to the mqtt server.
 I would suggest using a mqtt explorer to examine your published names and zones numbers to recreate, if desired
 ```
@@ -190,11 +190,3 @@ alarm_control_panel:
     name: "nx584"
     retain: true
 ```
-
-NOTE: The below alarm integration allows the user to be displayed a keypad in the Home Assistant web interface.
-
-As of Mar 2021 (HASS core-2021.3.4) to implement the mqtt alarm control panel, a slight adjustment must be performed to the MQTT componenent in HASS. 
-I had requested this change, but HASS dev team quickly closed my code change request, stating it was an enhancement. It you would like to see this change too,
-urge them to reconsider by creating another issue like https://github.com/home-assistant/core/issues/47234
-
-If you prefer no keypad, then no change is required to HA.

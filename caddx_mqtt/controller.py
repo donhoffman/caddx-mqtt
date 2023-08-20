@@ -5,10 +5,10 @@ import serial
 import socket
 import time
 
-from nx584mqtt import event_queue
-from nx584mqtt import mail
-from nx584mqtt import model
-from nx584mqtt import mqtt_client
+from caddx_mqtt import event_queue
+from caddx_mqtt import mail
+from caddx_mqtt import model
+from caddx_mqtt import mqtt_client
 
 LOG = logging.getLogger('controller')
 
@@ -648,7 +648,7 @@ class NXController(object):
         prev_now = datetime.datetime.now()
         self.set_time()
         try:
-            max_zone = self._config.getint('config', 'max_zone')
+            max_zone = self._config.getint('config', 'max_zone', fallback=8)
         except configparser.NoOptionError:
             max_zone = 8
             self._config.set('config', 'max_zone', str(max_zone))

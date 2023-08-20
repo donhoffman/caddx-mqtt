@@ -23,7 +23,7 @@ def _send_system_email(config, subject, recipients, body):
     msg['Subject'] = subject
     msg['From'] = fromaddr
     msg['Date'] = email.utils.formatdate()
-    msg['Message-Id'] = email.utils.make_msgid('nx584mqtt')
+    msg['Message-Id'] = email.utils.make_msgid('caddx_mqtt')
     for addr in recipients:
         msg['To'] = addr
 
