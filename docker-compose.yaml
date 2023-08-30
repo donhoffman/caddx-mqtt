@@ -9,26 +9,25 @@ services:
     ports:
       - "5007:5007"
     devices:
-      - /dev/ttyS0:/dev/ttyS0
+      - /dev/ttyUSB0:/dev/ttyUSB0
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /appdata/caddx_server:/config
     environment:
-      - CONFIG_FILE="/config/caddx_server.yaml"
-      # Uncomment each as needed
-      # - LOG_LEVEL="WARNING"
-      # - API_ADDR="127.00.1"
-      # - API_PORT="5007"
-      # - MQTT_BROKER="127.0.0.1"
-      # - MQTT_PORT="1883"
-      # - MQTT_USER="mqtt_user"
-      # - MQTT_PASS="mqtt_pass"
-      # - MQTT_STATE_TOPIC="caddx_server/state"
-      # - MQTT_COMMAND_TOPIC="caddx_server/command"
-      # - MQTT_TIMEOUT="10"
-      # - SOL_ADDR=""
-      # - SERIAL_PORT="/dev/ttyS0"
-      # - SERIAL_BAUD="3800"
+      - CONFIG_FILE=${CONFIG_FILE:-/config/config.yaml}
+      - LOG_LEVEL=${LOG_LEVEL:-DEBUG}
+      - API_ADDR=${API_ADDR:-0.0.0.0}
+      - API_PORT=5007
+      - MQTT_BROKER=192.168.9.12
+      - MQTT_PORT=1883
+      - MQTT_USER=${MQTT_USER}
+      - MQTT_PASS=${MQTT_PASS}
+      - MQTT_STATE_TOPIC=home/alarm
+      - MQTT_COMMAND_TOPIC=home/alarm/set
+      - MQTT_TIMEOUT=10
+      - SOL_ADDR=""
+      - SERIAL_PORT=${SERIAL_PORT}
+      - SERIAL_BAUD=38400
 
     restart: "unless-stopped"
 

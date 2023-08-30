@@ -136,6 +136,7 @@ def main():
         LOG.error('Input Log level INVALID. Try: "INFO|DEBUG|WARNING"')
         LOG.setLevel(logging.WARNING)
 
+    LOG.debug(f"Broker: {args.mqttBroker}")
     if args.mqttBroker:
         # TBD: just use the args namespace instead of copying to local vars
         mqtt_broker = args.mqttBroker
@@ -159,6 +160,7 @@ def main():
     # TBD Figuring out what type of connection is being used by checking if the first part of the port spec starts with a /dev/ or not
     #      is a hack. Fix this.
 
+    LOG.debug(f"Serial: {args.serial}")
     if args.solAddr:
         host, port = args.solAddr.split(':')
         ctrl = controller.NXController((host, int(port)),
@@ -172,7 +174,7 @@ def main():
                                        mqtt_tls_active, mqtt_tls_insecure, mqtt_timeout)
     else:
         LOG.error('Either host:port or serial and baudrate are required')
-        return
+        sys.exit()
 
     LOG.debug('Activating mqtt controller')
     api_alt.CONTROLLER = ctrl
