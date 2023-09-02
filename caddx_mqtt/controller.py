@@ -27,13 +27,20 @@ def make_ascii(data):
     return ''.join(data_chars)
 
 
-def make_pin_buffer(digits):
+def make_pin_buffer(digits: str) -> list[int]:
+    """Convert a string of digits to a binary pin buffer
+
+    From a string of digits, return a list of bytes (pinbuf) with each nibble consisting of one of the digits of the pin.
+    If less than 6 digits, pad with 0s.
+
+    :param digits: The PIN digits
+    :return: A binary pin buffer
+    """
     pinbuf = []
+    if len(digits) < 6:
+        digits += '0' * (6 - len(digits))
     for i in range(0, 6, 2):
-        try:
-            pinbuf.append((int(digits[i + 1]) << 4) | int(digits[i]))
-        except (IndexError, TypeError):
-            pinbuf.append(0xFF)
+        pinbuf.append((int(digits[i + 1]) << 4) | int(digits[i]))
     return pinbuf
 
 
@@ -206,7 +213,8 @@ class NXController(object):
             return
         try:
             self.mqtt_client.publish(self._state_topic_root + "/system/id", str(self.system.panel_id), retain=True)
-            self.mqtt_client.publish(self._state_topic_root + "/system/info", str(self.system.status_flags), retain=True)
+            self.mqtt_client.publish(self._state_topic_root + "/system/info", str(self.system.status_flags),
+                                     retain=True)
             self.mqtt_client.publish_system_datetime()
             # Request latest state
             self.get_system_status()

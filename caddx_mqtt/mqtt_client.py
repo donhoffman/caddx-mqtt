@@ -69,23 +69,23 @@ class MQTTClient(object):
             return
         if payload.lower().startswith("bypass_toggle"):
             if api_alt.CONTROLLER is not None:
-                fields = payload.split(",", 2)
+                fields = [x.strip() for x in payload.split(",")]  # Remove spaces
                 api_alt.CONTROLLER.zone_bypass_toggle(int(fields[1]))
         elif payload.lower().startswith("arm_away"):
             if api_alt.CONTROLLER is not None:
-                fields = payload.split(",", 3)
+                fields = [x.strip() for x in payload.split(",")]  # Remove spaces
                 api_alt.CONTROLLER.arm_exit(int(fields[1]))
                 # Publish template cmd to command topic to clear code
                 client.publish(self._command_topic, "nop", retain=True)
         elif payload.lower().startswith("arm_home"):
             if api_alt.CONTROLLER is not None:
-                fields = payload.split(",", 3)
+                fields = [x.strip() for x in payload.split(",")]  # Remove spaces
                 api_alt.CONTROLLER.arm_stay(int(fields[1]))
                 # Publish template cmd to command topic to clear code
                 client.publish(self._command_topic, "nop", retain=True)
         elif payload.lower().startswith("disarm"):
             if api_alt.CONTROLLER is not None:
-                fields = payload.split(",", 3)
+                fields = [x.strip() for x in payload.split(",")]  # Remove spaces
                 api_alt.CONTROLLER.disarm(fields[2], int(fields[1]))
                 # Publish template cmd to command topic to clear code
                 client.publish(self._command_topic, "nop", retain=True)
