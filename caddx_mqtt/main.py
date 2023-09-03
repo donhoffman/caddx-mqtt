@@ -198,10 +198,10 @@ def main():
         # Mark system and zones as offline
         # TBD: Manual LWT not necessary as LWT can be sent by broker
         #      if we tell it what to send on connect.
-        # try:
-        #     if args.mqtt is not None:
-        #         topic = mqtt_state_topic_root + "/system/avail"
-        #         api_alt.CONTROLLER.mqtt_client.publish(topic, "offline", retain=True)
-        # except Exception as ex:
-        #     LOG.error('Unable to send MQTT Last Will message: %s' % str(ex))
+        try:
+            if args.mqttBroker is not None:
+                topic = mqtt_state_topic_root + "/system/avail"
+                api_alt.CONTROLLER.mqtt_client.publish(topic, "offline", retain=True)
+        except Exception as ex:
+            LOG.error('Unable to send MQTT Last Will message: %s' % str(ex))
         sys.exit()
