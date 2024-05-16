@@ -10,6 +10,7 @@
       <w>authbytetype</w>
       <w>baudrate</w>
       <w>bypassable</w>
+      <w>caddx</w>
       <w>cksum</w>
       <w>clnt</w>
       <w>connack</w>
