@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="58d443fd-c7db-468e-8bf2-5f99ec61448a" name="Changes" comment="Add 'caddx' to dictionary and enable 'Black' on save and reformat&#10;&#10;A new word, 'caddx', was added to the dhoffman dictionary to expand its vocabulary. Also, the 'Black' Python code formatter has been enabled to run on both save and reformat operations to enforce code style consistency." />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="develop/1-initial-refactor" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;donhoffman&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/donhoffman/caddx-mqtt.git&quot;,
+    &quot;accountId&quot;: &quot;e5c42fda-dadd-4f04-9b17-fa687613b758&quot;
+  }
+}</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2TzbmoRXwmaqzMj6eIhC2ZLQVPG" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "com.jetbrains.python.black.configuration.BlackFormatterConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-PY-241.15989.155" />
+        <option value="bundled-python-sdk-babbdf50b680-7c6932dee5e4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.15989.155" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="58d443fd-c7db-468e-8bf2-5f99ec61448a" name="Changes" comment="" />
+      <created>1692049018826</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1692049018826</updated>
+      <workItem from="1692049020267" duration="2044000" />
+      <workItem from="1692051083880" duration="174000" />
+      <workItem from="1692051267580" duration="6067000" />
+      <workItem from="1692061130368" duration="4360000" />
+      <workItem from="1693434856952" duration="35000" />
+      <workItem from="1693434927300" duration="636000" />
+      <workItem from="1693447128888" duration="366000" />
+      <workItem from="1693601586700" duration="2435000" />
+      <workItem from="1696462909306" duration="309000" />
+      <workItem from="1714351290030" duration="8036000" />
+      <workItem from="1714790069627" duration="23000" />
+      <workItem from="1714790107186" duration="10032000" />
+      <workItem from="1715650045288" duration="391000" />
+      <workItem from="1715699327512" duration="10000" />
+      <workItem from="1715699486834" duration="401000" />
+      <workItem from="1715829259874" duration="781000" />
+      <workItem from="1715830194547" duration="542000" />
+    </task>
+    <task id="LOCAL-00001" summary="Repaired all PyCharm and pylint warning/errors.">
+      <option name="closed" value="true" />
+      <created>1692059324348</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1692059324348</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Added 'Black' component to PyCharm project settings&#10;&#10;The 'Black' component with configuration for Python 3.10 was added to the PyCharm project settings (stored in .idea/misc.xml). This is to enforce code formatting consistency across the project.">
+      <option name="closed" value="true" />
+      <created>1715830419977</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1715830419977</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Add 'caddx' to dictionary and enable 'Black' on save and reformat&#10;&#10;A new word, 'caddx', was added to the dhoffman dictionary to expand its vocabulary. Also, the 'Black' Python code formatter has been enabled to run on both save and reformat operations to enforce code style consistency.">
+      <option name="closed" value="true" />
+      <created>1715830565661</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1715830565661</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Repaired all PyCharm and pylint warning/errors." />
+    <MESSAGE value="Added 'Black' component to PyCharm project settings&#10;&#10;The 'Black' component with configuration for Python 3.10 was added to the PyCharm project settings (stored in .idea/misc.xml). This is to enforce code formatting consistency across the project." />
+    <MESSAGE value="Add 'caddx' to dictionary and enable 'Black' on save and reformat&#10;&#10;A new word, 'caddx', was added to the dhoffman dictionary to expand its vocabulary. Also, the 'Black' Python code formatter has been enabled to run on both save and reformat operations to enforce code style consistency." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add 'caddx' to dictionary and enable 'Black' on save and reformat&#10;&#10;A new word, 'caddx', was added to the dhoffman dictionary to expand its vocabulary. Also, the 'Black' Python code formatter has been enabled to run on both save and reformat operations to enforce code style consistency." />
+  </component>
+</project>
