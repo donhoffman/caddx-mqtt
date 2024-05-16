@@ -11,11 +11,11 @@ in the configuration of the control panel.
 This package is designed to be a direct replacement for pynx584.
 Connection services allow for HTTP server (flask) and/or MQTT client (paho-mqtt).
 
-MQTT provides considerable improvements in zone change latency. Also, since flask is really designed only for development and is considered unstable, HTTP usage is not suggested, but only is provided for backwards-compability.
+MQTT provides considerable improvements in zone change latency. Also, since flask is really designed only for development and is considered unstable, HTTP usage is not suggested, but only is provided for backwards-compatibility.
 
 # Installation Details:
 
-[DETAILS](DETAILS.txt)
+[DETAILS](DETAILS.md)
 
 ------------------------------------------------
 # Improvements:
@@ -26,7 +26,7 @@ MQTT provides considerable improvements in zone change latency. Also, since flas
 - User access to zone and partition flags
 - Heartbeat to verify alarm connection is still active
 
-![Screenshot](images/nx584mqtt.jpg)
+![Screenshot](images/caddxmqtt.jpg)
 
 ------------------------------------------------
 # FUTURE:
@@ -40,5 +40,5 @@ MQTT provides considerable improvements in zone change latency. Also, since flas
 
 # BREAKING CHANGES (minimal from pynx584):
 
-- No compatiblity with pynx584
+- No compatibility with pynx584
 

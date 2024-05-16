@@ -1,21 +1,14 @@
-try:
-    # Python 3 (assumingly)
-    import ConfigParser as configparser
-except ImportError:
-    import configparser
+import configparser
 import datetime
 import logging
-import os
 import serial
 import socket
-import sys
 import time
 
-from nx584mqtt import event_queue
-from nx584mqtt import mail
-from nx584mqtt import model
-from nx584mqtt import mqtt_client
-
+from caddx_mqtt import event_queue
+from caddx_mqtt import mail
+from caddx_mqtt import model
+from caddx_mqtt import mqtt_client
 
 LOG = logging.getLogger('controller')
 
@@ -34,18 +27,25 @@ def make_ascii(data):
     return ''.join(data_chars)
 
 
-def make_pin_buffer(digits):
+def make_pin_buffer(digits: str) -> list[int]:
+    """Convert a string of digits to a binary pin buffer
+
+    From a string of digits, return a list of bytes (pinbuf) with each nibble consisting of one of the digits of the pin.
+    If less than 6 digits, pad with 0s.
+
+    :param digits: The PIN digits
+    :return: A binary pin buffer
+    """
     pinbuf = []
+    if len(digits) < 6:
+        digits += '0' * (6 - len(digits))
     for i in range(0, 6, 2):
-        try:
-            pinbuf.append((int(digits[i + 1]) << 4) | int(digits[i]))
-        except (IndexError, TypeError):
-            pinbuf.append(0xFF)
+        pinbuf.append((int(digits[i + 1]) << 4) | int(digits[i]))
     return pinbuf
 
 
 def fletcher(data, k=16):
-    if  k not in (16, 32, 64):
+    if k not in (16, 32, 64):
         raise ValueError("Valid choices of k are 16, 32 and 64")
     nbytes = k // 16
     mod = 2 ** (8 * nbytes) - 1
@@ -159,9 +159,8 @@ class SocketWrapper(object):
 
 
 class NXController(object):
-    def __init__(self, portspec, configfile, mqtt_host, mqtt_port
-		, mqtt_username, mqtt_password, state_topic_root
-		, command_topic, tls_active, tls_insecure, timeout_sec):
+    def __init__(self, portspec, configfile, mqtt_host, mqtt_port, mqtt_username, mqtt_password, state_topic_root,
+                 command_topic, tls_active, tls_insecure, timeout_sec):
         self._portspec = portspec
         self._configfile = configfile
         self._queue = []
@@ -176,15 +175,15 @@ class NXController(object):
         self._load_config()
         self.event_queue = event_queue.EventQueue(100)
         self._state_topic_root = state_topic_root
+        self._ser = None
         if mqtt_host is None:
             self._mqtt_client_enabled = False
         else:
             LOG.info('MQTT Client activated')
             self._mqtt_client_enabled = True
             self.mqtt_client = mqtt_client.MQTTClient(
-                mqtt_host, mqtt_port, mqtt_username, mqtt_password
-		, state_topic_root, command_topic, tls_active
-		, tls_insecure, timeout_sec)
+                mqtt_host, mqtt_port, mqtt_username, mqtt_password, state_topic_root,
+                command_topic, tls_active, tls_insecure, timeout_sec)
         self.connect()
 
     def connect(self):
@@ -196,7 +195,7 @@ class NXController(object):
             LOG.info('Connected')
 
     def get_partition_state_string(self, partition):
-        # Return paritition state string
+        # Return partition state string
         if partition.armed:
             if partition.armedHome:
                 return "armed_home"
@@ -206,19 +205,16 @@ class NXController(object):
             return "disarmed"
 
     def publish_all(self):
-        # Publish all current values to MQTT client
-        if self._mqtt_client_enabled == False:
+        # Publish all current values to MQTT clnt
+        if not self._mqtt_client_enabled:
             return
-        if self.mqtt_client.connected == False:
+        if not self.mqtt_client.connected:
             LOG.warning('Initial sync publish connection failure.')
             return
         try:
-            self.mqtt_client.publish(self._state_topic_root + "/system/id"
-                    , str(self.system.panel_id)
-                    , retain=True)
-            self.mqtt_client.publish(self._state_topic_root + "/system/info"
-                    , str(self.system.status_flags)
-                    , retain=True)
+            self.mqtt_client.publish(self._state_topic_root + "/system/id", str(self.system.panel_id), retain=True)
+            self.mqtt_client.publish(self._state_topic_root + "/system/info", str(self.system.status_flags),
+                                     retain=True)
             self.mqtt_client.publish_system_datetime()
             # Request latest state
             self.get_system_status()
@@ -229,35 +225,31 @@ class NXController(object):
             try:
                 # Publish partition metadata
                 self.mqtt_client.publish_partition_condition_flags(
-			partition.number, partition.condition_flags)
+                    partition.number, partition.condition_flags)
                 # Publish partition state
-                self.mqtt_client.publish_partition_state(partition.number
-                        , self.get_partition_state_string(partition) ) 
+                self.mqtt_client.publish_partition_state(partition.number, self.get_partition_state_string(partition))
                 # Request latest state
                 self.get_partition_status(partition.number)
             except Exception as ex:
-                LOG.error('Unable to publish partition %s: %s' % ( str(partition.number), ex))
+                LOG.error('Unable to publish partition %s: %s' % (str(partition.number), ex))
 
         for zone in self.zones.values():
             try:
                 # Publish zone metadata
-                self.mqtt_client.publish(self._state_topic_root + "/zones/" + str(zone.number) 
-			+ "/name"
-                        , str(zone.name)
-                        , retain=True)
+                self.mqtt_client.publish(self._state_topic_root + "/zones/" + str(zone.number) + "/name",
+                                         str(zone.name), retain=True)
                 self.mqtt_client.publish_zone_type_flags(zone.number, zone.type_flags)
                 self.mqtt_client.publish_zone_condition_flags(zone.number, zone.condition_flags)
-                self.mqtt_client.publish_zone_bypassed(zone.number, str(zone.bypassed).lower()) 
+                self.mqtt_client.publish_zone_bypassed(zone.number, str(zone.bypassed).lower())
                 # Publish zone state
                 if zone.state:
-                    self.mqtt_client.publish_zone_state(zone.number,"true")
+                    self.mqtt_client.publish_zone_state(zone.number, "true")
                 else:
-                    self.mqtt_client.publish_zone_state(zone.number,"false")
+                    self.mqtt_client.publish_zone_state(zone.number, "false")
                 # Request latest state
                 self.get_zone_status(zone.number)
             except Exception as ex:
-                LOG.error('Unable to publish zone %s: %s' % ( str(zone.number) , ex))
-
+                LOG.error('Unable to publish zone %s: %s' % (str(zone.number), ex))
 
     def _load_config(self):
         self._config = configparser.ConfigParser()
@@ -301,6 +293,7 @@ class NXController(object):
         if not data:
             return None
         LOG.debug('Parsing raw ASCII line %r' % data)
+        # noinspection PyBroadException
         try:
             line = parse_ascii(data)
         except:
@@ -330,7 +323,7 @@ class NXController(object):
     def arm_exit(self, partition):
         self._queue.append([0x3E, 0x02, partition])
 
-    def arm_auto(self, partition):
+    def arm_auto(self, _partition):
         self._queue.append([0x3D, 0x05, 0x01, 0x01])
 
     def disarm(self, master_pin, partition):
@@ -423,10 +416,10 @@ class NXController(object):
                 zone.condition_flags.append(string)
         if self._mqtt_client_enabled:
             if zone.state:
-                self.mqtt_client.publish_zone_state(zone.number,"true")
+                self.mqtt_client.publish_zone_state(zone.number, "true")
             else:
-                self.mqtt_client.publish_zone_state(zone.number,"false")
-            self.mqtt_client.publish_zone_bypassed(zone.number, str(zone.bypassed).lower()) 
+                self.mqtt_client.publish_zone_state(zone.number, "false")
+            self.mqtt_client.publish_zone_bypassed(zone.number, str(zone.bypassed).lower())
             self.mqtt_client.publish_zone_condition_flags(zone.number, zone.condition_flags)
 
         zone.type_flags = []
@@ -448,7 +441,7 @@ class NXController(object):
                  'zone': zone.number,
                  'zone_state': zone.state,
                  'zone_flags': zone.condition_flags,
-             }
+                 }
         self.event_queue.push(event)
 
     def _send_flag_notifications(self, flags_section, flags_key, asserted,
@@ -483,7 +476,7 @@ class NXController(object):
                 if types[byte] & (1 << bit):
                     partition.condition_flags.append(name)
 
-        # Publish to mqtt client
+        # Publish to mqtt clnt
         if self._mqtt_client_enabled:
             if not self.initial_mqtt_publish_all_completed:
                 # Publish all current data to mqtt
@@ -491,10 +484,8 @@ class NXController(object):
                 self.initial_mqtt_publish_all_completed = True
             else:
                 # Publish latest partition state
-                self.mqtt_client.publish_partition_state(partition.number
-                        , self.get_partition_state_string(partition) )
-                self.mqtt_client.publish_partition_condition_flags(
-                        partition.number, partition.condition_flags)
+                self.mqtt_client.publish_partition_state(partition.number, self.get_partition_state_string(partition))
+                self.mqtt_client.publish_partition_condition_flags(partition.number, partition.condition_flags)
 
         if was_armed != partition.armed:
             LOG.info('Partition %i %s armed' % (
@@ -514,7 +505,7 @@ class NXController(object):
                  'partition_flags': partition.condition_flags,
                  'partition_was_armed': was_armed,
                  'partition_is_armed': partition.armed,
-             }
+                 }
         self.event_queue.push(event)
 
         if changed:
@@ -535,7 +526,6 @@ class NXController(object):
             self._send_flag_notifications(section, 'alarm_flags', asserted,
                                           deasserted, email_alarms)
 
-
     def process_msg_8(self, frame):
         errors = model.System.STATUS_FLAGS[1] + model.System.STATUS_FLAGS[2]
         status = frame.data[1:10]
@@ -549,19 +539,19 @@ class NXController(object):
         LOG.debug('System status received (panel id 0x%02x)' % (
             self.system.panel_id))
 
-        def _log(flag, asserted):
-            if flag not in errors:
+        def _log(statusFlag, flagState):
+            if statusFlag not in errors:
                 fn = LOG.info
             else:
-                if asserted:
+                if flagState:
                     fn = LOG.error
                 else:
-                    fn = LOG.warn
-            if asserted:
+                    fn = LOG.warning
+            if flagState:
                 pfx = ''
             else:
                 pfx = 'de-'
-            msg = 'System %sasserts %s' % (pfx, flag)
+            msg = 'System %sasserts %s' % (pfx, statusFlag)
             fn(msg)
 
         deasserted = set(orig_flags) - set(self.system.status_flags)
@@ -628,11 +618,10 @@ class NXController(object):
         _event = {'type': 'log',
                   'event': event.event_string,
                   'timestamp': event.timestamp.isoformat(),
-              }
+                  }
         self.event_queue.push(_event)
 
         mail.send_log_event_mail(self._config, event)
-
 
     def process_msg_18(self, frame):
         user = self._get_user(frame.data[0])
@@ -667,7 +656,7 @@ class NXController(object):
         prev_now = datetime.datetime.now()
         self.set_time()
         try:
-            max_zone = self._config.getint('config', 'max_zone')
+            max_zone = self._config.getint('config', 'max_zone', fallback=8)
         except configparser.NoOptionError:
             max_zone = 8
             self._config.set('config', 'max_zone', str(max_zone))
@@ -712,8 +701,9 @@ class NXController(object):
                 # self._run_queue()
             name = 'process_msg_%i' % frame.msgtype
             if hasattr(self, name):
+                # noinspection PyBroadException
                 try:
                     getattr(self, name)(frame)
-                except Exception as e:
+                except Exception:
                     LOG.exception('Failed to process message type %i',
                                   frame.msgtype)

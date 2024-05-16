@@ -44,7 +44,7 @@ MSG_TYPES = [
     'Send X-10 Message',
     'Log Event Request',
     'Send Keypad Text Message',
-    'Keypad Terminal Mode REquest',
+    'Keypad Terminal Mode Request',
     'Reserved',
     'Reserved',
     'Reserved',
@@ -70,7 +70,7 @@ MSG_TYPES = [
 class Zone(object):
     STATUS_FLAGS = [
         'Faulted', 'Trouble', 'Bypass', 'Inhibit', 'Low battery',
-        'Loss of supervision', 'Reserved',]
+        'Loss of supervision', 'Reserved', ]
 
     TYPE_FLAGS = [
         ['Fire', '24 hour', 'Key-switch', 'Follower',
@@ -98,32 +98,38 @@ class Zone(object):
 
     @property
     def faulted(self):
-        return ('Faulted' in self.condition_flags)
+        return 'Faulted' in self.condition_flags
 
 
 class Partition(object):
     CONDITION_FLAGS = [
+        # Byte 3
         ['Bypass code required', 'Fire trouble', 'Fire',
          'Pulsing buzzer', 'TLM fault memory', 'reserved',
          'Armed', 'Instant'],
+        # Byte 4
         ['Previous alarm', 'Siren on', 'Steady siren on',
          'Alarm memory', 'Tamper', 'Cancel command entered',
          'Code entered', 'Cancel pending'],
+        # Byte 5
         ['Reserved', 'Silent exit enabled', 'Entryguard (stay mode)',
          'Chime mode on', 'Entry', 'Delay expiration warning',
          'Exit 1', 'Exit 2'],
+        # Byte 6
         ['LED extinguish', 'Cross timing', 'Recent closing being timed',
          'Reserved', 'Exit error triggered', 'Auto home inhibited',
          'Sensor low battery', 'Sensor lost supervision'],
+        # Byte 8
         ['Zone bypassed', 'Force arm triggered by auto arm',
          'Ready to arm', 'Ready to force arm', 'Valid PIN accepted',
          'Chime on (sounding)', 'Error beep (triple beep)',
          'Tone on (activation tone)'],
+        # Byte 9
         ['Entry 1', 'Open period', 'Alarm sent using phone number 1',
          'Alarm sent using phone number 2',
          'Alarm sent using phone number 3',
          'Cancel report is in the stack',
-         'Keyswitch armed', 'Delay trip in progress (common zone)'],
+         'Key switch armed', 'Delay trip in progress (common zone)'],
     ]
 
     def __init__(self, number):
@@ -141,7 +147,8 @@ class Partition(object):
                 'Entryguard (stay mode)' in self.condition_flags
                 or 'Silent exit enabled' in self.condition_flags
                 or 'Instant' in self.condition_flags
-               )
+        )
+
 
 class System(object):
     STATUS_FLAGS = [

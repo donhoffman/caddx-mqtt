@@ -1,17 +1,20 @@
-
 import flask
 import json
 import logging
 
+from caddx_mqtt import controller
+
 # Set a log handler and format before flask init
 from logging.config import dictConfig
 
+
 class NoFlaskInfoFilter(logging.Filter):
     # Matches Flask log lines for filtering
-    def filter(record):
-        return not ( record.levelname in ('INFO')
-                and record.module in ('_internal')
-               )
+    def filter(self, record: logging.LogRecord):
+        return not (record.levelname in 'INFO'
+                    and record.module in '_internal'
+                    )
+
 
 dictConfig({
     'version': 1,
@@ -30,8 +33,9 @@ dictConfig({
 })
 
 LOG = logging.getLogger('api')
-CONTROLLER = None
-app = flask.Flask("nx584mqtt")
+CONTROLLER: controller.NXController | None = None
+app = flask.Flask("caddx_mqtt.api")
+
 
 def show_zone(zone):
     return {
@@ -43,25 +47,6 @@ def show_zone(zone):
         'type_flags': zone.type_flags,
     }
 
-def show_partition(partition):
-    return {
-        'number': partition.number,
-        'condition_flags': partition.condition_flags,
-        'armed': 'Armed' in partition.condition_flags,
-        'last_user': partition.last_user,
-    }
-
-def show_user(user):
-    if all([x > 9 for x in user.pin]):
-        pin = None
-    else:
-        pin = ''.join([str(c) if c < 10 else '' for c in user.pin])
-    return {
-        'number': user.number,
-        'pin': pin,
-        'authority_flags': user.authority_flags,
-        'authorized_partitions': user.authorized_partitions,
-    }
 
 def show_partition(partition):
     return {
@@ -70,6 +55,7 @@ def show_partition(partition):
         'armed': 'Armed' in partition.condition_flags,
         'last_user': partition.last_user,
     }
+
 
 def show_user(user):
     if all([x > 9 for x in user.pin]):
@@ -86,24 +72,26 @@ def show_user(user):
 
 @app.route('/zones')
 def index_zones():
+    # noinspection PyBroadException
     try:
         result = json.dumps({
             'zones': [show_zone(zone) for zone in CONTROLLER.zones.values()]})
         return flask.Response(result,
                               mimetype='application/json')
-    except Exception as e:
+    except Exception:
         LOG.exception('Failed to index zones')
 
 
 @app.route('/partitions')
 def index_partitions():
+    # noinspection PyBroadException
     try:
         result = json.dumps({
             'partitions': [show_partition(partition)
                            for partition in CONTROLLER.partitions.values()]})
         return flask.Response(result,
                               mimetype='application/json')
-    except Exception as e:
+    except Exception:
         LOG.exception('Failed to index partitions')
 
 
@@ -210,4 +198,3 @@ def get_events():
 def get_version():
     return flask.Response(json.dumps({'version': '1.2'}),
                           mimetype='application/json')
-
